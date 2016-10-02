@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>marc.henrard</groupId>
+  <artifactId>analysis</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <name>analysis</name>
+  <description>Analysis of quantitative finance situations</description>
+  
+  <!-- ==========          Dependencies          ========== -->
+  <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.9.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-basics</artifactId>
+      <version>${og.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-loader</artifactId>
+      <version>${og.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-market</artifactId>
+      <version>${og.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-pricer</artifactId>
+      <version>${og.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-pricer</artifactId>
+      <version>${og.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>  
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-convert</artifactId>
+      <version>${joda-convert.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-beans</artifactId>
+      <version>${joda-beans.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${opencsv.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>3.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.13</version>
+    </dependency>
+  </dependencies>
+  
+  
+  <!-- ==================================================================== -->
+  <profiles>
+    <profile>
+      <id>joda-beans-eclipse</id>
+      <activation>
+        <property>
+          <name>eclipse.buildId</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.joda</groupId>
+            <artifactId>joda-beans-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <eclipse>true</eclipse>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <!-- ==================================================================== -->
+  <properties>
+    <og.version>1.0.0</og.version>
+    <joda-convert.version>1.8.1</joda-convert.version>
+    <joda-beans.version>1.7</joda-beans.version>
+    <opencsv.version>2.3</opencsv.version>
+    <!-- Properties for maven-compiler-plugin -->
+    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.fork>true</maven.compiler.fork>
+    <maven.compiler.verbose>true</maven.compiler.verbose>
+  </properties>
+  
+</project>
