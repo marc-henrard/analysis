@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2015 - present by Marc Henrard.
  */
-package marc.henrard.analysis.capital;
+package marc.henrard.analysis.regulation.capital;
 
 import static com.opengamma.strata.product.swap.type.FixedOvernightSwapConventions.EUR_FIXED_1Y_EONIA_OIS;
 import static com.opengamma.strata.basics.currency.Currency.EUR;
