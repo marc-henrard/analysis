@@ -35,7 +35,7 @@ import com.opengamma.strata.product.swap.ResolvedSwap;
  * Requirements for Market Risk.
  * <p>
  * The 'Minimum Capital Requirements for Market Risk' was previously refereed to
- * as 'Fundamental Review of the Trading Book (FRTB).
+ * as 'Fundamental Review of the Trading Book' (FRTB).
  * <p>
  * Actually the number under the square root is floored at 0 in the final text.
  * The capital is not imaginary anymore in the mathematical sense, but it
