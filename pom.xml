@@ -8,39 +8,28 @@
   
   <!-- ==========          Dependencies          ========== -->
   <dependencies>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.9.10</version>
-      <scope>test</scope>
-    </dependency>
+    <!-- OpenGamma Strata -->
     <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-basics</artifactId>
-      <version>${og.version}</version>
+      <version>${og-strata.version}</version>
     </dependency>
     <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-loader</artifactId>
-      <version>${og.version}</version>
+      <version>${og-strata.version}</version>
     </dependency>
     <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-market</artifactId>
-      <version>${og.version}</version>
+      <version>${og-strata.version}</version>
     </dependency>
     <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-pricer</artifactId>
-      <version>${og.version}</version>
+      <version>${og-strata.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-pricer</artifactId>
-      <version>${og.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>  
+    <!-- Beans -->
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
@@ -51,6 +40,7 @@
       <artifactId>joda-beans</artifactId>
       <version>${joda-beans.version}</version>
     </dependency>
+    <!-- Other -->
     <dependency>
       <groupId>net.sf.opencsv</groupId>
       <artifactId>opencsv</artifactId>
@@ -65,6 +55,20 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
       <version>3.13</version>
+    </dependency>
+    <!-- Tests -->
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-pricer</artifactId>
+      <version>${og-strata.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>  
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.9.10</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   
@@ -102,9 +106,9 @@
 
   <!-- ==================================================================== -->
   <properties>
-    <og.version>1.1.0</og.version>
-    <joda-convert.version>1.8.1</joda-convert.version>
-    <joda-beans.version>1.7</joda-beans.version>
+    <og-strata.version>1.5.0</og-strata.version>
+    <joda-convert.version>1.9.2</joda-convert.version>
+    <joda-beans.version>2.0.2</joda-beans.version>
     <opencsv.version>2.3</opencsv.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
