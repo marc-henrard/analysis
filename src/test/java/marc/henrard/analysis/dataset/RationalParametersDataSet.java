@@ -8,10 +8,10 @@ import java.time.ZoneId;
 
 import com.opengamma.strata.pricer.DiscountFactors;
 
-import marc.henrard.analysis.model.rationalmulticurve.RationalTwoFactorHWShapeCstParameters;
 import marc.henrard.risq.model.generic.ScaledSecondTime;
 import marc.henrard.risq.model.generic.TimeMeasurement;
 import marc.henrard.risq.model.rationalmulticurve.RationalOneFactorSimpleHWShapedParameters;
+import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapeCstParameters;
 
 /**
  * Generates rational multi-curve model parameters for analysis purposes.

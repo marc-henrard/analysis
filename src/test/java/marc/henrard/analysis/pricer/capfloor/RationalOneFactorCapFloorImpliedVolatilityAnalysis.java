@@ -32,7 +32,7 @@ import com.opengamma.strata.product.swap.IborRateCalculation;
 import marc.henrard.analysis.data.exporter.ExportUtils;
 import marc.henrard.analysis.dataset.MulticurveStandardEurDataSet;
 import marc.henrard.analysis.dataset.RationalParametersDataSet;
-import marc.henrard.analysis.model.rationalmulticurve.RationalTwoFactorHWShapeCstParameters;
+import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapeCstParameters;
 import marc.henrard.risq.pricer.capfloor.RationalCapFloorLegPricer;
 import marc.henrard.risq.pricer.capfloor.RationalTwoFactorCapletFloorletPeriodSemiExplicitPricer;
 

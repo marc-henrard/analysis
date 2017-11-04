@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2017 - present by Marc Henrard.
  */
-package marc.henrard.analysis.model.rationalmulticurve;
+package marc.henrard.risq.model.rationalmulticurve;
 
 import java.io.Serializable;
 import java.time.LocalDate;
