@@ -32,7 +32,7 @@ import com.opengamma.strata.product.swap.IborRateCalculation;
 import marc.henrard.analysis.data.exporter.ExportUtils;
 import marc.henrard.analysis.dataset.MulticurveStandardEurDataSet;
 import marc.henrard.analysis.dataset.RationalParametersDataSet;
-import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapeCstParameters;
+import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapePlusCstParameters;
 import marc.henrard.risq.pricer.capfloor.RationalCapFloorLegPricer;
 import marc.henrard.risq.pricer.capfloor.RationalTwoFactorCapletFloorletPeriodSemiExplicitPricer;
 
@@ -61,7 +61,7 @@ public class RationalOneFactorCapFloorImpliedVolatilityAnalysis {
   public static final ImmutableRatesProvider MULTICURVE =
       MulticurveStandardEurDataSet.multicurve(VALUATION_DATE, REF_DATA);
 
-  public static final RationalTwoFactorHWShapeCstParameters RATIONAL2 =
+  public static final RationalTwoFactorHWShapePlusCstParameters RATIONAL2 =
       RationalParametersDataSet.twoFactorHWShaped(VALUATION_TIME, VALUATION_ZONE, MULTICURVE.discountFactors(EUR));
 
   /* Descriptions of cap/floor */
@@ -142,7 +142,7 @@ public class RationalOneFactorCapFloorImpliedVolatilityAnalysis {
           .payReceive(PayReceive.PAY).build();
       ResolvedIborCapFloorLeg resolvedLeg = leg.resolve(REF_DATA);
       for (int j = 0; j < nbParamShifts; j++) {
-        RationalTwoFactorHWShapeCstParameters rationalShift =
+        RationalTwoFactorHWShapePlusCstParameters rationalShift =
             RATIONAL2.withParameter(parameterIndex, parametersChanged[j]);
         iv[i][j + 1] = PRICER_LEG_S_EX.impliedVolatilityBachelier(resolvedLeg, MULTICURVE, rationalShift);
       }
@@ -184,7 +184,7 @@ public class RationalOneFactorCapFloorImpliedVolatilityAnalysis {
           .payReceive(PayReceive.PAY).build();
       ResolvedIborCapFloorLeg resolvedLeg = leg.resolve(REF_DATA);
       for (int j = 0; j < nbParamShifts; j++) {
-        RationalTwoFactorHWShapeCstParameters rationalShift =
+        RationalTwoFactorHWShapePlusCstParameters rationalShift =
             RATIONAL2.withParameter(parameterIndex, parametersChanged[j]);
         iv[k][j + 1] = PRICER_LEG_S_EX.impliedVolatilityBachelier(resolvedLeg, MULTICURVE, rationalShift);
       }
