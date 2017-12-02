@@ -44,7 +44,7 @@ import marc.henrard.risq.pricer.capfloor.RationalTwoFactorCapletFloorletPeriodSe
  * @author Marc Henrard
  */
 @Test
-public class RationalOneFactorCapFloorImpliedVolatilityAnalysis {
+public class RationalTwoFactorCapFloorImpliedVolatilityAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
   private static final LocalDate VALUATION_DATE = LocalDate.of(2017, 9, 6);
