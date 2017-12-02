@@ -64,6 +64,13 @@
     </dependency>
     <!-- Tests -->
     <dependency>
+      <groupId>marc.henrard</groupId>
+      <artifactId>risq-ir-models</artifactId>
+      <version>${risq.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>  
+    <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-pricer</artifactId>
       <version>${og-strata.version}</version>
@@ -113,7 +120,7 @@
   <!-- ==================================================================== -->
   <properties>
     <risq.version>0.1.0-SNAPSHOT</risq.version>
-    <og-strata.version>1.5.0</og-strata.version>
+    <og-strata.version>1.6.0</og-strata.version>
     <joda-convert.version>1.9.2</joda-convert.version>
     <joda-beans.version>2.0.2</joda-beans.version>
     <opencsv.version>2.3</opencsv.version>
