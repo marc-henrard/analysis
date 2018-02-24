@@ -10,7 +10,7 @@ import com.opengamma.strata.pricer.DiscountFactors;
 
 import marc.henrard.risq.model.generic.ScaledSecondTime;
 import marc.henrard.risq.model.generic.TimeMeasurement;
-import marc.henrard.risq.model.rationalmulticurve.RationalOneFactorSimpleHWShapedParameters;
+import marc.henrard.risq.model.rationalmulticurve.RationalOneFactorSimpleHWShapeParameters;
 import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapePlusCstParameters;
 
 /**
@@ -38,12 +38,12 @@ public class RationalParametersDataSet {
    * @param discountFactors  the discount factors
    * @return  the parameters
    */
-  public static RationalOneFactorSimpleHWShapedParameters oneFactorHWShaped(
+  public static RationalOneFactorSimpleHWShapeParameters oneFactorHWShaped(
       LocalTime time,
       ZoneId zone,
       DiscountFactors discountFactors) {
     
-    return RationalOneFactorSimpleHWShapedParameters.builder()
+    return RationalOneFactorSimpleHWShapeParameters.builder()
         .a(A)
         .b00(B_0_0)
         .eta(ETA)

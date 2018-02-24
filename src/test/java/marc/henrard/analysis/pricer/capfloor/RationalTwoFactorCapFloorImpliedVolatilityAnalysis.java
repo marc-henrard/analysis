@@ -29,11 +29,11 @@ import com.opengamma.strata.product.capfloor.ResolvedIborCapFloorLeg;
 import com.opengamma.strata.product.common.PayReceive;
 import com.opengamma.strata.product.swap.IborRateCalculation;
 
-import marc.henrard.analysis.data.exporter.ExportUtils;
 import marc.henrard.analysis.dataset.MulticurveStandardEurDataSet;
 import marc.henrard.analysis.dataset.RationalParametersDataSet;
+import marc.henrard.murisq.basics.data.export.ExportUtils;
 import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapePlusCstParameters;
-import marc.henrard.risq.pricer.capfloor.RationalCapFloorLegPricer;
+import marc.henrard.risq.pricer.capfloor.SingleCurrencyModelCapFloorLegPricer;
 import marc.henrard.risq.pricer.capfloor.RationalTwoFactorCapletFloorletPeriodSemiExplicitPricer;
 
 /**
@@ -55,8 +55,8 @@ public class RationalTwoFactorCapFloorImpliedVolatilityAnalysis {
 
   private static final RationalTwoFactorCapletFloorletPeriodSemiExplicitPricer PRICER_CAPLET_S_EX =
       RationalTwoFactorCapletFloorletPeriodSemiExplicitPricer.DEFAULT;
-  private static final RationalCapFloorLegPricer PRICER_LEG_S_EX =
-      new RationalCapFloorLegPricer(PRICER_CAPLET_S_EX);
+  private static final SingleCurrencyModelCapFloorLegPricer PRICER_LEG_S_EX =
+      new SingleCurrencyModelCapFloorLegPricer(PRICER_CAPLET_S_EX);
 
   public static final ImmutableRatesProvider MULTICURVE =
       MulticurveStandardEurDataSet.multicurve(VALUATION_DATE, REF_DATA);
