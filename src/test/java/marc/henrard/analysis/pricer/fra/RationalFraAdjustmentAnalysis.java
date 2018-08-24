@@ -23,8 +23,8 @@ import com.opengamma.strata.product.common.BuySell;
 import com.opengamma.strata.product.fra.ResolvedFra;
 import com.opengamma.strata.product.fra.type.FraConventions;
 
+import marc.henrard.murisq.basics.time.ScaledSecondTime;
 import marc.henrard.risq.model.dataset.MulticurveStandardEurDataSet;
-import marc.henrard.risq.model.generic.ScaledSecondTime;
 import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactor2HWShapePlusCstParameters;
 import marc.henrard.risq.pricer.fra.RationalFraProductNumericalIntegrationPricer;
 
