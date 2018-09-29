@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 - Marc Henrard.
+ * Copyright (C) 2017 - present by Marc Henrard.
  */
 package marc.henrard.analysis.dataset;
 
@@ -17,7 +17,7 @@ import com.opengamma.strata.pricer.curve.RatesCurveCalibrator;
 import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 
 /**
- * Generate a multi-curve in EUR with standard configuration and quotes from csv file.
+ * Generate a multi-curve in GBP with standard configuration and quotes from csv file.
  * 
  * @author Marc Henrard
  */
