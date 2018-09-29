@@ -11,11 +11,11 @@ import com.opengamma.strata.collect.io.ResourceLocator;
 import com.opengamma.strata.data.ImmutableMarketData;
 import com.opengamma.strata.loader.csv.QuotesCsvLoader;
 import com.opengamma.strata.loader.csv.RatesCalibrationCsvLoader;
-import com.opengamma.strata.market.curve.CurveGroupDefinition;
 import com.opengamma.strata.market.curve.CurveGroupName;
 import com.opengamma.strata.market.curve.CurveName;
+import com.opengamma.strata.market.curve.RatesCurveGroupDefinition;
 import com.opengamma.strata.market.observable.QuoteId;
-import com.opengamma.strata.pricer.curve.CurveCalibrator;
+import com.opengamma.strata.pricer.curve.RatesCurveCalibrator;
 import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 
 
@@ -42,15 +42,15 @@ public class MulticurveEur20151120DataSet {
       ResourceLocator.of(ResourceLocator.FILE_URL_PREFIX + PATH_CONFIG + "nodes-eur.csv");
   private static final ResourceLocator NODES_RESOURCE_FRTB =
       ResourceLocator.of(ResourceLocator.FILE_URL_PREFIX + PATH_CONFIG + "nodes-eur-frtb.csv");
-  private static final ImmutableMap<CurveGroupName, CurveGroupDefinition> GROUPS_CONFIG =
+  private static final ImmutableMap<CurveGroupName, RatesCurveGroupDefinition> GROUPS_CONFIG =
       RatesCalibrationCsvLoader.load(GROUPS_RESOURCE, SETTINGS_RESOURCE, NODES_RESOURCE);
-  private static final ImmutableMap<CurveGroupName, CurveGroupDefinition> GROUPS_CONFIG_FRTB =
+  private static final ImmutableMap<CurveGroupName, RatesCurveGroupDefinition> GROUPS_CONFIG_FRTB =
       RatesCalibrationCsvLoader.load(GROUPS_RESOURCE, SETTINGS_RESOURCE, NODES_RESOURCE_FRTB);
 
   private static final ImmutableMap<QuoteId, Double> QUOTES = QuotesCsvLoader.load(VALUATION_DATE, ResourceLocator.of(FILE_QUOTES));
   private static final ImmutableMarketData MARKET_DATA = ImmutableMarketData.builder(VALUATION_DATE)
 		  .addValueMap(QUOTES).build();
-  private static final CurveCalibrator CALIBRATOR = CurveCalibrator.standard();
+  private static final RatesCurveCalibrator CALIBRATOR = RatesCurveCalibrator.standard();
   private static final CurveGroupName GROUP_NAME = CurveGroupName.of("EUR-DSCONOIS-EURIBOR3MIRS-EURIBOR6MIRS");
   public static final ImmutableRatesProvider MULTICURVE = 
       CALIBRATOR.calibrate(GROUPS_CONFIG.get(GROUP_NAME), MARKET_DATA, REF_DATA);
