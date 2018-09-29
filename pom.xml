@@ -11,45 +11,8 @@
     <!-- RisQ -->
     <dependency>
       <groupId>marc.henrard</groupId>
-      <artifactId>risq-ir-models</artifactId>
-      <version>${risq.version}</version>
-    </dependency>
-    <!-- OpenGamma Strata -->
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-basics</artifactId>
-      <version>${og-strata.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-loader</artifactId>
-      <version>${og-strata.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-market</artifactId>
-      <version>${og-strata.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-pricer</artifactId>
-      <version>${og-strata.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-product</artifactId>
-      <version>${og-strata.version}</version>
-    </dependency>
-    <!-- Beans -->
-    <dependency>
-      <groupId>org.joda</groupId>
-      <artifactId>joda-convert</artifactId>
-      <version>${joda-convert.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.joda</groupId>
-      <artifactId>joda-beans</artifactId>
-      <version>${joda-beans.version}</version>
+      <artifactId>murisq-ir-models</artifactId>
+      <version>${murisq-ir.version}</version>
     </dependency>
     <!-- Other -->
     <dependency>
@@ -68,13 +31,6 @@
       <version>3.13</version>
     </dependency>
     <!-- Tests -->
-    <dependency>
-      <groupId>marc.henrard</groupId>
-      <artifactId>risq-ir-models</artifactId>
-      <version>${risq.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>  
     <dependency>
       <groupId>com.opengamma.strata</groupId>
       <artifactId>strata-pricer</artifactId>
@@ -124,10 +80,8 @@
 
   <!-- ==================================================================== -->
   <properties>
-    <risq.version>0.1.0-SNAPSHOT</risq.version>
-    <og-strata.version>1.7.0</og-strata.version>
-    <joda-convert.version>1.9.2</joda-convert.version>
-    <joda-beans.version>2.0.2</joda-beans.version>
+    <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
+    <og-strata.version>2.0.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
