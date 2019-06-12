@@ -10,8 +10,8 @@ import com.opengamma.strata.pricer.DiscountFactors;
 
 import marc.henrard.murisq.basics.time.ScaledSecondTime;
 import marc.henrard.murisq.basics.time.TimeMeasurement;
-import marc.henrard.risq.model.rationalmulticurve.RationalOneFactorSimpleHWShapeParameters;
-import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactorHWShapePlusCstParameters;
+import marc.henrard.murisq.model.rationalmulticurve.RationalOneFactorSimpleHWShapeParameters;
+import marc.henrard.murisq.model.rationalmulticurve.RationalTwoFactorHWShapePlusCstParameters;
 
 /**
  * Generates rational multi-curve model parameters for analysis purposes.

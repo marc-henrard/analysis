@@ -16,11 +16,6 @@
     </dependency>
     <!-- Other -->
     <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>${opencsv.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
       <version>3.13</version>
@@ -81,7 +76,7 @@
   <!-- ==================================================================== -->
   <properties>
     <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
-    <og-strata.version>2.0.0</og-strata.version>
+    <og-strata.version>2.3.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>

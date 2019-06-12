@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017 - Marc Henrard.
+ * Copyright (C) 2017 - present by Marc Henrard.
  */
 package marc.henrard.analysis.dataset;
 
@@ -17,14 +17,14 @@ import com.opengamma.strata.pricer.curve.RatesCurveCalibrator;
 import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 
 /**
- * Generate a multi-curve in EUR with standard configuration and quotes from csv file.
+ * Generate a multi-curve in GBP with standard configuration and quotes from csv file.
  * 
  * @author Marc Henrard
  */
 public class MulticurveStandardGbpDataSet {
 
-  private static final String PATH_CONFIG = "src/test/resources/curve-config/";
-  private static final String PATH_QUOTES = "src/test/resources/quotes/";
+  private static final String PATH_CONFIG = "src/analysis/resources/curve-config/";
+  private static final String PATH_QUOTES = "src/analysis/resources/quotes/";
 
   private static final String CURVE_GROUP_STD_NAME_STR = "GBP-DSCONOIS-L6MIRS";
   private static final CurveGroupName CURVE_GROUP_STD_NAME = CurveGroupName.of(CURVE_GROUP_STD_NAME_STR);

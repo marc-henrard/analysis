@@ -25,8 +25,8 @@ import com.opengamma.strata.product.fra.type.FraConventions;
 
 import marc.henrard.analysis.dataset.MulticurveStandardEurDataSet;
 import marc.henrard.murisq.basics.time.ScaledSecondTime;
-import marc.henrard.risq.model.rationalmulticurve.RationalTwoFactor2HWShapePlusCstParameters;
-import marc.henrard.risq.pricer.fra.RationalFraProductNumericalIntegrationPricer;
+import marc.henrard.murisq.model.rationalmulticurve.RationalTwoFactor2HWShapePlusCstParameters;
+import marc.henrard.murisq.pricer.fra.RationalFraProductNumericalIntegrationPricer;
 
 /**
  * Analysis of the adjustment to fair rate for forward rate agreement. 
