@@ -31,8 +31,8 @@ public class MulticurveEur20151120DataSet {
   public static final LocalDate VALUATION_DATE = LocalDate.of(2015, 11, 20);
 
   /* Load and calibrate curves */
-  private static final String PATH_CONFIG = "src/test/resources/curve-config/";
-  private static final String FILE_QUOTES = "src/test/resources/quotes/quotes-20151120-eur.csv";
+  private static final String PATH_CONFIG = "src/analysis/resources/curve-config/";
+  private static final String FILE_QUOTES = "src/analysis/resources/quotes/quotes-20151120-eur.csv";
 
   private static final ResourceLocator GROUPS_RESOURCE =
       ResourceLocator.of(ResourceLocator.FILE_URL_PREFIX + PATH_CONFIG + "groups-eur.csv");

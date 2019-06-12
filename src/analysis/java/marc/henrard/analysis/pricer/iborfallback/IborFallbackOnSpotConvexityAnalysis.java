@@ -30,7 +30,7 @@ import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 
 import marc.henrard.analysis.dataset.MulticurveConfigDataSet;
 import marc.henrard.murisq.basics.data.export.ExportUtils;
-import marc.henrard.risq.model.hullwhite.HullWhiteOneFactorPiecewiseConstantFormulas;
+import marc.henrard.murisq.model.hullwhite.HullWhiteOneFactorPiecewiseConstantFormulas;
 
 /**
  * Analysis of the convexity adjustment for an overnight rate paid on a tenor period (3-month).
@@ -94,13 +94,9 @@ public class IborFallbackOnSpotConvexityAnalysis {
       double p0t0 = MULTICURVE.discountFactor(USD, fixingDates.get(i));
       double t1 = HW_PROVIDER.relativeTime(obsOn.get(i).getMaturityDate());
       double p0t1 = MULTICURVE.discountFactor(USD, obsOn.get(i).getMaturityDate());
-      double kappa = MEAN_REVERSION;
-      double gamma = Math.exp(
-          (Math.exp(-kappa * t0) - Math.exp(-kappa * t1)) * (Math.exp(-kappa * v) - Math.exp(-kappa * t1)) /
-              (kappa * kappa) * HW_FORMULAS.alpha2ForwardGPart(HW_PARAMETERS, 0, t0));
-      // TODO: include this formula in a method
+      double expGamma = HW_FORMULAS.timingAdjustmentFactor(HW_PARAMETERS, t0, t1, v);
       builderOnFwdsAdj.put(fixingDates.get(i), 
-          onFwd + p0t0 / p0t1 * (gamma - 1.0d) / obsOn.get(i).getYearFraction());
+          onFwd + p0t0 / p0t1 * (expGamma - 1.0d) / obsOn.get(i).getYearFraction());
     }
     StringBuilder builderStrOnFwds = new StringBuilder();
     ExportUtils.exportTimeSeries("ONFWD", builderOnFwds.build(), builderStrOnFwds);

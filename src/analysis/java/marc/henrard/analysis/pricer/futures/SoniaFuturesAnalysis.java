@@ -26,9 +26,9 @@ import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 import com.opengamma.strata.product.SecurityId;
 
 import marc.henrard.analysis.dataset.MulticurveStandardGbpDataSet;
-import marc.henrard.risq.pricer.indexfutures.HullWhiteOneFactorCompoundedOvernightFuturesProductPricer;
-import marc.henrard.risq.product.index.CompoundedOvernightFutures;
-import marc.henrard.risq.product.index.CompoundedOvernightFuturesResolved;
+import marc.henrard.murisq.pricer.indexfutures.HullWhiteOneFactorCompoundedOvernightFuturesProductPricer;
+import marc.henrard.murisq.product.futures.CompoundedOvernightFutures;
+import marc.henrard.murisq.product.futures.CompoundedOvernightFuturesResolved;
 
 /**
  * Analysis of SONIA futures pricing and convexity adjustment.

@@ -23,8 +23,8 @@ import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
  */
 public class MulticurveStandardGbpDataSet {
 
-  private static final String PATH_CONFIG = "src/test/resources/curve-config/";
-  private static final String PATH_QUOTES = "src/test/resources/quotes/";
+  private static final String PATH_CONFIG = "src/analysis/resources/curve-config/";
+  private static final String PATH_QUOTES = "src/analysis/resources/quotes/";
 
   private static final String CURVE_GROUP_STD_NAME_STR = "GBP-DSCONOIS-L6MIRS";
   private static final CurveGroupName CURVE_GROUP_STD_NAME = CurveGroupName.of(CURVE_GROUP_STD_NAME_STR);
