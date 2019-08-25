@@ -18,13 +18,12 @@ Comments and suggestions for improvements are welcomed.
 * SONIA futures convexity adjustment. Used in working paper Marc Henrard, Overnight Futures: Convexity Adjustment. February 2018. Available at (https://ssrn.com/abstract=3134346)
 * IBOR fallback: convexity adjustment for spot rate approach.
 * Calibration of curves with overnight/overnight basis swaps. Impact on delta risk.
+* LIBOR fallback GBP-USD: historical time series analysis
 
 ## Regulations
 
 * FRTB: Imaginary capital for some positions. The matrix used as
   (pseudo-)correlation is not positively defined.
-
-
 
 ---
 
@@ -59,6 +58,7 @@ Some recent public courses:
 * Workshop *Interest Rate Modelling in the Multi-curve Framework: Collateral and Regulatory Requirements*. LFS Workshop (Singapore), 3-4 April 2019.
 * Workshop *Interest Rate Modelling in the Multi-curve Framework: Collateral and Regulatory Requirements*. LFS Workshop (Singapore), April 2019.
 * Planned: *The future of LIBOR: Quantitative perspective on benchmarks, transition, fallback and regulation*. The 15th Quantitative Finance Conference - WBS (Italy, Rome), 16 October 2019.
+* Planned: Workshop *The future of LIBOR: Quantitative perspective on benchmarks, transition, fallback and regulation*. RiskMinds (Amsterdam, The Netherlands), 6 December 2019.
 
 
 ## Advisory
