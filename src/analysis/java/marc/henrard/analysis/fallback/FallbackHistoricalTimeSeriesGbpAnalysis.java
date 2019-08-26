@@ -55,7 +55,7 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
       LocalDate.of(2022, 1, 1));
   private static final int NB_ANNOUNCEMENT_DATES = ANNOUNCEMENT_DATES.size();
   private static final int[] LOOKBACK_PERIODS = {5, 7, 10, 15};
-  private static final int STD_DEV_FUT = 3;
+  private static final int STD_DEV_FUT = 1;
   
   private static final String EXPORT_PATH = "src/analysis/resources/output/";
 
@@ -113,7 +113,7 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
   }
 
   /**
-   * Computes and export future means within three standard deviations.
+   * Computes and export future means within one standard deviation.
    * 
    * @throws IOException
    */
@@ -125,8 +125,9 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
     LocalDateDoubleTimeSeries tsLibor = TIME_SERIES.get(idLibor);
     LocalDateDoubleTimeSeries tsOnCmp = TIME_SERIES.get(idOnCmp);
     LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
+    LocalDateDoubleTimeSeries tsSpreadStd = tsSpread.subSeries(LocalDate.of(2014, 1, 1), ANALYSIS_DATE);
     /* Standard deviation */
-    double[] spreadValues = tsSpread.values().toArray();
+    double[] spreadValues = tsSpreadStd.values().toArray();
     int nbSpread = spreadValues.length;
     double stdDeviationDaily = 0.0;
     for (int i = 0; i < nbSpread - 1; i++) {
@@ -134,8 +135,8 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
       stdDeviationDaily += spreadDailyReturn * spreadDailyReturn;
     }
     stdDeviationDaily = Math.sqrt(stdDeviationDaily / (nbSpread - 1));
-    /* Future */
-
+    /* Future */ 
+    /* Note: with respect to paper: nbLookback = n; loopdays = i - (n+1)*/
     LocalDate startDateFuture = tsSpread.getLatestDate();
     for (int looplookback = 0; looplookback < LOOKBACK_PERIODS.length; looplookback++) {
       List<LocalDateDoubleTimeSeries> tsFutureMeanPlus = new ArrayList<>();
@@ -156,14 +157,18 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
         LocalDateDoubleTimeSeriesBuilder tsFuture0 = LocalDateDoubleTimeSeries.builder();
         while (currentDate.isBefore(ANNOUNCEMENT_DATES.get(loopdate))) {
           double spreadPart1 = nbLookback * currentMeanSpread + (loopdays + 1) * currentSpread;
-          double m = nbLookback + (loopdays + 1);
+          double i = nbLookback + (loopdays + 1);
+          double var = 0.0; // Variance of the running mean
+          for (int l = 0; l <= loopdays; l++) {
+            var += (loopdays - l + 1) * (loopdays - l + 1);
+          }
           double spreadPlus =
-              (spreadPart1 + Math.sqrt((loopdays + 2) * (loopdays + 1) * 0.5) * STD_DEV_FUT * stdDeviationDaily) / m;
+              (spreadPart1 + Math.sqrt(var) * STD_DEV_FUT * stdDeviationDaily) / i;
           tsFuturePlus.put(currentDate, spreadPlus);
           double spreadMinus =
-              (spreadPart1 - Math.sqrt((loopdays + 2) * (loopdays + 1) * 0.5) * STD_DEV_FUT * stdDeviationDaily) / m;
+              (spreadPart1 - Math.sqrt(var) * STD_DEV_FUT * stdDeviationDaily) / i;
           tsFutureMinus.put(currentDate, spreadMinus);
-          double spread0 = spreadPart1 / m;
+          double spread0 = spreadPart1 / i;
           tsFuture0.put(currentDate, spread0);
           currentDate = CALENDAR.next(currentDate);
           loopdays++;

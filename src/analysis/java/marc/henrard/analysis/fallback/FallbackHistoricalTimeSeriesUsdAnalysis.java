@@ -12,6 +12,7 @@ import java.util.Map;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.math.Quantiles;
 import com.opengamma.strata.basics.ReferenceData;
 import com.opengamma.strata.basics.date.HolidayCalendar;
 import com.opengamma.strata.basics.index.IborIndex;
@@ -54,10 +55,15 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       LocalDate.of(2022, 1, 1));
   private static final int NB_ANNOUNCEMENT_DATES = ANNOUNCEMENT_DATES.size();
   private static final int[] LOOKBACK_PERIODS = {5, 7, 10, 15};
-  private static final int STD_DEV_FUT = 3;
+  private static final int STD_DEV_FUT = 1;
   
   private static final String EXPORT_PATH = "src/analysis/resources/output/";
-
+  
+  /**
+   * Computes past means and median
+   * 
+   * @throws IOException
+   */
   public void spread_computation() throws IOException {
     long start, end;
     start = System.currentTimeMillis();
@@ -68,9 +74,11 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
     LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
     for (int looplookback = 0; looplookback < LOOKBACK_PERIODS.length; looplookback++) {
       List<LocalDateDoubleTimeSeries> tsRunningMean = new ArrayList<>();
+      List<LocalDateDoubleTimeSeries> tsRunningMedian = new ArrayList<>();
       for (int loopdate = 0; loopdate < NB_ANNOUNCEMENT_DATES; loopdate++) {
         LocalDate startDate = ANNOUNCEMENT_DATES.get(loopdate).minusYears(LOOKBACK_PERIODS[looplookback]);
         LocalDateDoubleTimeSeriesBuilder tsMean = LocalDateDoubleTimeSeries.builder();
+        LocalDateDoubleTimeSeriesBuilder tsMedian = LocalDateDoubleTimeSeries.builder();
         LocalDate currentDate = startDate.plusMonths(1); // The first month of mean is almost meaningless
         while (currentDate.isBefore(ANALYSIS_DATE)) {
           if (tsSpread.containsDate(currentDate)) {
@@ -78,18 +86,26 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
                 tsSpread.subSeries(startDate, currentDate);
             tsMean.put(currentDate,
                 tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).average().getAsDouble());
+            tsMedian.put(currentDate,
+                Quantiles.median().compute(tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).toArray()));
           }
           currentDate = currentDate.plusDays(1);
         }
         tsRunningMean.add(tsMean.build());
+        tsRunningMedian.add(tsMedian.build());
       }
       /* Export */
       for (int loopdate = 0; loopdate < NB_ANNOUNCEMENT_DATES; loopdate++) {
-        StringBuilder tsExport = new StringBuilder();
-        String name = IBOR_INDEX.toString() + "EFFRCMP-RUNNING-MEAN-" + ANNOUNCEMENT_DATES.get(loopdate).toString() + "-" +
+        StringBuilder tsMeanExport = new StringBuilder();
+        String nameMean = IBOR_INDEX.toString() + "EFFRCMP-RUNNING-MEAN-" + ANNOUNCEMENT_DATES.get(loopdate).toString() + "-" +
             LOOKBACK_PERIODS[looplookback] + "-" + IBOR_INDEX.getTenor().toString();
-        ExportUtils.exportTimeSeries(name, tsRunningMean.get(loopdate), tsExport);
-        ExportUtils.exportString(tsExport.toString(), EXPORT_PATH + name + ".csv");
+        ExportUtils.exportTimeSeries(nameMean, tsRunningMean.get(loopdate), tsMeanExport);
+        ExportUtils.exportString(tsMeanExport.toString(), EXPORT_PATH + nameMean + ".csv");
+        StringBuilder tsMedianExport = new StringBuilder();
+        String nameMedian = IBOR_INDEX.toString() + "EFFRCMP-RUNNING-MEDIAN-" + ANNOUNCEMENT_DATES.get(loopdate).toString() + "-" +
+            LOOKBACK_PERIODS[looplookback] + "-" + IBOR_INDEX.getTenor().toString();
+        ExportUtils.exportTimeSeries(nameMedian, tsRunningMedian.get(loopdate), tsMedianExport);
+        ExportUtils.exportString(tsMedianExport.toString(), EXPORT_PATH + nameMedian + ".csv");
       }
     }
     end = System.currentTimeMillis();
@@ -109,8 +125,9 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
     LocalDateDoubleTimeSeries tsLibor = TIME_SERIES.get(idLibor);
     LocalDateDoubleTimeSeries tsOnCmp = TIME_SERIES.get(idOnCmp);
     LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
+    LocalDateDoubleTimeSeries tsSpreadStd = tsSpread.subSeries(LocalDate.of(2014, 1, 1), ANALYSIS_DATE);
     /* Standard deviation */
-    double[] spreadValues = tsSpread.values().toArray();
+    double[] spreadValues = tsSpreadStd.values().toArray();
     int nbSpread = spreadValues.length;
     double stdDeviationDaily = 0.0;
     for (int i = 0; i < nbSpread - 1; i++) {
@@ -118,8 +135,8 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       stdDeviationDaily += spreadDailyReturn * spreadDailyReturn;
     }
     stdDeviationDaily = Math.sqrt(stdDeviationDaily / (nbSpread - 1));
-    /* Future */
-
+    /* Future */ 
+    /* Note: with respect to paper: nbLookback = n; loopdays = i - (n+1)*/
     LocalDate startDateFuture = tsSpread.getLatestDate();
     for (int looplookback = 0; looplookback < LOOKBACK_PERIODS.length; looplookback++) {
       List<LocalDateDoubleTimeSeries> tsFutureMeanPlus = new ArrayList<>();
@@ -140,14 +157,18 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
         LocalDateDoubleTimeSeriesBuilder tsFuture0 = LocalDateDoubleTimeSeries.builder();
         while (currentDate.isBefore(ANNOUNCEMENT_DATES.get(loopdate))) {
           double spreadPart1 = nbLookback * currentMeanSpread + (loopdays + 1) * currentSpread;
-          double m = nbLookback + (loopdays + 1);
+          double i = nbLookback + (loopdays + 1);
+          double var = 0.0; // Variance of the running mean
+          for (int l = 0; l <= loopdays; l++) {
+            var += (loopdays - l + 1) * (loopdays - l + 1);
+          }
           double spreadPlus =
-              (spreadPart1 + Math.sqrt((loopdays + 2) * (loopdays + 1) * 0.5) * STD_DEV_FUT * stdDeviationDaily) / m;
+              (spreadPart1 + Math.sqrt(var) * STD_DEV_FUT * stdDeviationDaily) / i;
           tsFuturePlus.put(currentDate, spreadPlus);
           double spreadMinus =
-              (spreadPart1 - Math.sqrt((loopdays + 2) * (loopdays + 1) * 0.5) * STD_DEV_FUT * stdDeviationDaily) / m;
+              (spreadPart1 - Math.sqrt(var) * STD_DEV_FUT * stdDeviationDaily) / i;
           tsFutureMinus.put(currentDate, spreadMinus);
-          double spread0 = spreadPart1 / m;
+          double spread0 = spreadPart1 / i;
           tsFuture0.put(currentDate, spread0);
           currentDate = CALENDAR.next(currentDate);
           loopdays++;
