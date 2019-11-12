@@ -38,10 +38,10 @@ import marc.henrard.murisq.basics.index.ComplementIborIndices;
 public class FallbackHistoricalTimeSeriesUsdAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2019, 8, 21);
-  private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_6M;
+  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2019, 10, 3);
+  private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
   private static final HolidayCalendar CALENDAR = REF_DATA.getValue(IBOR_INDEX.getFixingCalendar());
-  private static final IborIndex ONCMP_INDEX = ComplementIborIndices.USD_FED_FUNDCMP_6M;
+  private static final IborIndex ONCMP_INDEX = ComplementIborIndices.USD_FED_FUNDCMP_3M;
   private static final List<ResourceLocator> FIXING_RESOURCES = ImmutableList.of(
       ResourceLocator.of("src/analysis/resources/fixing/" + IBOR_INDEX.toString() + ".csv"),
       ResourceLocator.of("src/analysis/resources/fixing/USD-FED-FUNDCMP-"
