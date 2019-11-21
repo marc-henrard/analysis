@@ -25,20 +25,20 @@
       <artifactId>poi-ooxml</artifactId>
       <version>3.13</version>
     </dependency>
-    <!-- Tests -->
-    <dependency>
-      <groupId>com.opengamma.strata</groupId>
-      <artifactId>strata-pricer</artifactId>
-      <version>${og-strata.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>  
+    <!-- Tests --> 
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>6.9.10</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.opengamma.strata</groupId>
+      <artifactId>strata-pricer</artifactId>
+      <version>${og-strata.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency> 
   </dependencies>
   
   
@@ -76,7 +76,7 @@
   <!-- ==================================================================== -->
   <properties>
     <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
-    <og-strata.version>2.3.0</og-strata.version>
+    <og-strata.version>2.6.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
