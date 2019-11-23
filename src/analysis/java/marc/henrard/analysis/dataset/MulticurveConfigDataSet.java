@@ -79,4 +79,31 @@ public class MulticurveConfigDataSet {
     return CALIBRATOR.calibrate(curveGroupDefinition, marketData, refData);
   }
 
+  /**
+   * Returns a multi-curve provider calibrated using a given curve group defined in given resources.
+   * 
+   * @param calibrationDate  the calibration date
+   * @param curveGroupName  the curve group name
+   * @param groupFile  the file with the group definition
+   * @param settingsFile  the file with the settings
+   * @param nodesFile  the file with the curves' nodes
+   * @param refData  the reference data
+   * @return the calibrated curves
+   */
+  public static ImmutableRatesProvider multicurve(
+      LocalDate calibrationDate,
+      CurveGroupName curveGroupName,
+      ResourceLocator groupFile,
+      ResourceLocator settingsFile,
+      ResourceLocator nodesFile,
+      String fileQuotes,
+      ReferenceData refData) {
+
+    RatesCurveGroupDefinition groupDefinition = RatesCalibrationCsvLoader
+        .load(groupFile, settingsFile, nodesFile).get(curveGroupName);
+    MarketData marketData = MarketData
+        .of(calibrationDate, QuotesCsvLoader.load(calibrationDate, ResourceLocator.of(fileQuotes)));
+    return CALIBRATOR.calibrate(groupDefinition, marketData, refData);
+  }
+
 }

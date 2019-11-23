@@ -1,0 +1,2 @@
+Curve Name,Value Type,Day Count,Interpolator,Left Extrapolator,Right Extrapolator
+USD-DSCON-OIS,df,Act/365F,LogLinear,Exponential,Exponential
