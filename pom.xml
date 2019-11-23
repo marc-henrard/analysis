@@ -6,6 +6,27 @@
   <name>analysis</name>
   <description>Analysis of quantitative finance situations</description>
   
+  <build>
+    <testSourceDirectory>${project.basedir}/src/analysis/java</testSourceDirectory>
+    <testOutputDirectory>${project.basedir}/target/analysis-classes</testOutputDirectory>
+    <pluginManagement>
+      <plugins>
+        <!--  Running Maven's test without slow HTML reports -->
+        <plugin>
+	      <artifactId>maven-surefire-plugin</artifactId>
+	      <configuration>
+	        <properties>
+	          <property>
+	            <name>usedefaultlisteners</name>
+	            <value>false</value>
+	          </property>
+	        </properties>
+	      </configuration>
+	    </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  
   <!-- ==========          Dependencies          ========== -->
   <dependencies>
     <!-- RisQ -->
@@ -26,6 +47,18 @@
       <version>3.13</version>
     </dependency>
     <!-- Tests --> 
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit5.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
@@ -78,6 +111,8 @@
     <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
     <og-strata.version>2.6.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
+    <assertj.version>3.14.0</assertj.version>
+    <junit5.version>5.5.2</junit5.version>
     <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
