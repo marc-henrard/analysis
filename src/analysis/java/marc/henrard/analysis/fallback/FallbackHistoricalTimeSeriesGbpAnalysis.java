@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.math.Quantiles;
@@ -33,13 +33,12 @@ import marc.henrard.murisq.basics.index.ComplementIborIndices;
  * 
  * @author Marc Henrard
  */
-@Test
 public class FallbackHistoricalTimeSeriesGbpAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2019, 11, 19);
-  private static final IborIndex IBOR_INDEX = IborIndices.GBP_LIBOR_3M;
-  private static final IborIndex ONCMP_INDEX = ComplementIborIndices.GBP_SONIACMP_3M;
+  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2019, 11, 20);
+  private static final IborIndex IBOR_INDEX = IborIndices.GBP_LIBOR_1M;
+  private static final IborIndex ONCMP_INDEX = ComplementIborIndices.GBP_SONIACMP_1M;
   private static final HolidayCalendar CALENDAR = REF_DATA.getValue(IBOR_INDEX.getFixingCalendar());
   private static final List<ResourceLocator> FIXING_RESOURCES = ImmutableList.of(
       ResourceLocator.of("src/analysis/resources/fixing/" + IBOR_INDEX.toString() + ".csv"),
@@ -63,6 +62,7 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
    * 
    * @throws IOException
    */
+  @Test
   public void spread_computation() throws IOException {
     IborIndex iborTmp = IBOR_INDEX;
     List<ResourceLocator> FIXING_RESOURCES = ImmutableList.of(
@@ -124,6 +124,7 @@ public class FallbackHistoricalTimeSeriesGbpAnalysis {
    * 
    * @throws IOException
    */
+  @Test
   public void spread_future_evolution() throws IOException {
     long start, end;
     start = System.currentTimeMillis();

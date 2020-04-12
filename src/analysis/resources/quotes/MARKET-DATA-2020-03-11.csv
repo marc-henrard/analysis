@@ -1,0 +1,13 @@
+Valuation Date, Symbology, Ticker, Field Name, Value
+2020-03-11, muRisQ-Ticker,USD-SOFR, MarketValue,0.011
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-1M, MarketValue,0.00445
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-2M, MarketValue,0.0037
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-3M, MarketValue,0.00315
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-4M, MarketValue,0.002875
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-5M, MarketValue,0.00265
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-6M, MarketValue,0.002425
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-8M, MarketValue,0.002375
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-9M, MarketValue,0.002275
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-1Y, MarketValue,0.002225
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-2Y, MarketValue,0.002575
+2020-03-11, muRisQ-Ticker,USD-FIXED-1Y-SOFR-OIS-3Y, MarketValue,0.003325

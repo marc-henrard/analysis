@@ -120,7 +120,7 @@ public class SofrPaiTransitionSensitivityAnalysis {
     PointSensitivities ptsFf = PRICER_SWAP.presentValueSensitivity(swap, multicurveFf);
     CurrencyParameterSensitivities psFf = multicurveFf.parameterSensitivity(ptsFf);
     CurrencyParameterSensitivities mqFf = MQC.sensitivity(psFf, multicurveFf);
-    ExcelExportUtil.export(ImmutableList.of("IRS-6Mx10Y"), 
+    ExcelExportUtil.export(ImmutableList.of("IRS-11Mx10Y"), 
         ImmutableList.of(parRateFf), 
         ImmutableList.of(pvFf), 
         mqFf.multipliedBy(BP1), 

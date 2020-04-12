@@ -4,7 +4,6 @@
 package marc.henrard.analysis.market.curve;
 
 import static com.opengamma.strata.basics.index.OvernightIndices.USD_FED_FUND;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,11 +16,8 @@ import com.opengamma.strata.basics.date.DayCounts;
 import com.opengamma.strata.basics.date.HolidayCalendar;
 import com.opengamma.strata.basics.date.HolidayCalendarId;
 import com.opengamma.strata.basics.date.HolidayCalendarIds;
-import com.opengamma.strata.basics.index.OvernightIndexObservation;
 import com.opengamma.strata.collect.array.DoubleArray;
 import com.opengamma.strata.collect.io.ResourceLocator;
-import com.opengamma.strata.collect.timeseries.LocalDateDoubleTimeSeries;
-import com.opengamma.strata.collect.timeseries.LocalDateDoubleTimeSeriesBuilder;
 import com.opengamma.strata.data.MarketData;
 import com.opengamma.strata.loader.csv.QuotesCsvLoader;
 import com.opengamma.strata.loader.csv.RatesCalibrationCsvLoader;
@@ -33,7 +29,6 @@ import com.opengamma.strata.pricer.curve.RatesCurveCalibrator;
 import com.opengamma.strata.pricer.rate.ImmutableRatesProvider;
 
 import marc.henrard.analysis.dataset.MulticurveConfigDataSet;
-import marc.henrard.murisq.basics.data.export.ExportUtils;
 import marc.henrard.murisq.market.curve.description.MultiplyFixedCurveDefinition;
 
 /**
@@ -78,7 +73,8 @@ public class OvernightCurveSeasonalityAnalysis {
    */
   @Test
   public void step_overnight_curve() throws IOException {
-    assertThat(exportCurve(MULTICURVE_PIECEWISE_CONSTANT_ON, PATH_PIECEWISE_CONSTANT_ON)).isTrue();
+    CurveExportUtils.exportOvernightCurve(
+        MULTICURVE_PIECEWISE_CONSTANT_ON, USD_FED_FUND, 375, REF_DATA, "ON-FWD", PATH_PIECEWISE_CONSTANT_ON);
   }
   
   private static final double JUMP_LEVEL_MONTH_END = 0.00135d;
@@ -111,26 +107,8 @@ public class OvernightCurveSeasonalityAnalysis {
         .of(VALUATION_DATE, QuotesCsvLoader.load(VALUATION_DATE, ResourceLocator.of(FILE_QUOTES)));
     ImmutableRatesProvider multicurveSeasonality =
         CALIBRATOR.calibrate(groupDefinitionAdjusted, marketData, REF_DATA);
-    exportCurve(multicurveSeasonality, PATH_PIECEWISE_CONSTANT_ON_SEASONALITY);
-  }
-
-  /* Export curves */
-  private boolean exportCurve(
-      ImmutableRatesProvider multicurve,
-      String exportFile) throws IOException {
-    int nbFwdDates = 375;
-    LocalDate currentDate = VALUATION_DATE;
-    LocalDateDoubleTimeSeriesBuilder builderOn = LocalDateDoubleTimeSeries.builder();
-    for(int loopdate=0; loopdate<nbFwdDates; loopdate++) {
-      OvernightIndexObservation obs = OvernightIndexObservation.of(USD_FED_FUND, currentDate, REF_DATA);
-      double rate = multicurve.overnightIndexRates(USD_FED_FUND).rate(obs);
-      builderOn.put(currentDate, rate);
-      currentDate = CALENDAR.next(currentDate);
-    }
-    StringBuilder fileContent = new StringBuilder();
-    ExportUtils.exportTimeSeries("ON-FWD-PWC", builderOn.build(), fileContent);
-    ExportUtils.exportString(fileContent.toString(), exportFile);
-    return true;
+    CurveExportUtils.exportOvernightCurve(
+        multicurveSeasonality, USD_FED_FUND, 375, REF_DATA, "ON-FWD", PATH_PIECEWISE_CONSTANT_ON_SEASONALITY);
   }
   
 }

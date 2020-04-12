@@ -109,7 +109,7 @@
   <!-- ==================================================================== -->
   <properties>
     <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
-    <og-strata.version>2.6.0</og-strata.version>
+    <og-strata.version>2.7.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
     <assertj.version>3.14.0</assertj.version>
     <junit5.version>5.5.2</junit5.version>
