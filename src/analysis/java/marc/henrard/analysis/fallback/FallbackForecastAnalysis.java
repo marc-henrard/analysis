@@ -26,7 +26,7 @@ import marc.henrard.analysis.market.curve.CurveExportUtils;
 public class FallbackForecastAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 3, 27);
+  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 4, 17);
   
   /* Load and calibrate curves */
   private static final String PATH_CONFIG = "src/analysis/resources/curve-config/USD-DSCONOIS-FOMC/";
@@ -47,7 +47,7 @@ public class FallbackForecastAnalysis {
 
   /* Export */
   private static final String PATH_PIECEWISE_CONSTANT_ON = 
-      "src/analysis/resources/output/overnight-piecewise-constant" + ANALYSIS_DATE.toString() +".csv";
+      "src/analysis/resources/output/overnight-piecewise-constant-" + ANALYSIS_DATE.toString() +".csv";
   
   /**
    * Calibrate the ON curve with piecewise constant forward rate and export to a csv file.

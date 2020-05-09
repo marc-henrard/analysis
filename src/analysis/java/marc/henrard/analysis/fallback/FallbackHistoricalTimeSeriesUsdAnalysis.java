@@ -36,7 +36,7 @@ import marc.henrard.murisq.basics.index.ComplementIborIndices;
 public class FallbackHistoricalTimeSeriesUsdAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 2, 14);
+  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 4, 17);
   private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
   private static final HolidayCalendar CALENDAR = REF_DATA.getValue(IBOR_INDEX.getFixingCalendar());
   private static final IborIndex ONCMP_INDEX = ComplementIborIndices.USD_FED_FUNDCMP_3M;
@@ -74,6 +74,7 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
     LocalDateDoubleTimeSeries tsLibor = TIME_SERIES.get(idLibor);
     LocalDateDoubleTimeSeries tsOnCmp = TIME_SERIES.get(idOnCmp);
     LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
+    System.out.println("Spread for " + tsSpread.getLatestDate() + " is " + tsSpread.getLatestValue());
     for (int looplookback = 0; looplookback < LOOKBACK_PERIODS.length; looplookback++) {
       List<LocalDateDoubleTimeSeries> tsRunningMean = new ArrayList<>();
       List<LocalDateDoubleTimeSeries> tsRunningMedian = new ArrayList<>();
@@ -94,7 +95,8 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
           }
           currentDate = currentDate.plusDays(1);
         }
-        tsRunningMean.add(tsMean.build());
+        LocalDateDoubleTimeSeries tsMeanBuild = tsMean.build();
+        tsRunningMean.add(tsMeanBuild);
         tsRunningMedian.add(tsMedian.build());
       }
       /* Export */
