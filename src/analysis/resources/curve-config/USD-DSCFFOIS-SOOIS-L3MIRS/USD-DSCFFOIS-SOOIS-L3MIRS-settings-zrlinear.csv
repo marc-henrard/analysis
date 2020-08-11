@@ -1,0 +1,4 @@
+Curve Name,Value Type,Day Count,Interpolator,Left Extrapolator,Right Extrapolator
+USD-SO-OIS,Zero,Act/365F,Linear,Flat,Flat
+USD-DSCFF-OIS,Zero,Act/365F,Linear,Flat,Flat
+USD-cFF-LIBOR3M-IRS,Zero,Act/365F,Linear,Flat,Flat

@@ -86,6 +86,8 @@ public class SofrPaiTransitionSensitivityAnalysis {
   
   private static final String FILE_QUOTES = 
       "src/analysis/resources/quotes/MARKET-DATA-" + VALUATION_DATE.toString() + ".csv";
+  private static final String FILE_QUOTES_SOFR_SHIFTED = 
+      "src/analysis/resources/quotes/MARKET-DATA-" + VALUATION_DATE.toString() + "-shifted.csv";
   private static final MarketData MARKET_DATA = MarketData
       .of(VALUATION_DATE, QuotesCsvLoader.load(VALUATION_DATE, ResourceLocator.of(FILE_QUOTES)));
   
@@ -237,6 +239,11 @@ public class SofrPaiTransitionSensitivityAnalysis {
         mqPortfolioHedged.multipliedBy(BP1),
         PATH_EXPORT + "hedged-portfolio-pv01.xlsx");
     System.out.println(quantity2);
+  }
+
+  @Test
+  public void impact_sofr_error() throws IOException {
+    
   }
   
 }
