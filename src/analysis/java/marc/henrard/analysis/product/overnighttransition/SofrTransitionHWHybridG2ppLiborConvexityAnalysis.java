@@ -7,11 +7,9 @@ package marc.henrard.analysis.product.overnighttransition;
 import static com.opengamma.strata.basics.currency.Currency.USD;
 import static com.opengamma.strata.basics.index.IborIndices.USD_LIBOR_3M;
 import static com.opengamma.strata.basics.index.OvernightIndices.USD_FED_FUND;
-import static com.opengamma.strata.basics.index.OvernightIndices.USD_SOFR;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Period;
 import java.time.ZoneId;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import com.opengamma.strata.basics.ReferenceData;
 import com.opengamma.strata.basics.date.HolidayCalendar;
 import com.opengamma.strata.basics.index.IborIndexObservation;
-import com.opengamma.strata.basics.index.OvernightIndexObservation;
 import com.opengamma.strata.collect.array.DoubleArray;
 import com.opengamma.strata.collect.io.ResourceLocator;
 import com.opengamma.strata.data.MarketData;
@@ -41,7 +38,7 @@ import marc.henrard.murisq.pricer.swap.DiscountingTransitionHWHybridG2ppConvexit
  * 
  * @author Marc Henrard
  */
-public class SofrTransitionHWHybridG2ppConvexityAnalysis {
+public class SofrTransitionHWHybridG2ppLiborConvexityAnalysis {
   
   private static final ReferenceData REF_DATA = ReferenceData.standard();
   private static final LocalDate VALUATION_DATE = LocalDate.of(2019, 10, 4);
@@ -52,6 +49,7 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
   private static final RatesCurveCalibrator CALIBRATOR = RatesCurveCalibrator.standard();
   private static final HolidayCalendar CALENDAR_FIXING_IBOR = REF_DATA.getValue(USD_LIBOR_3M.getFixingCalendar());
   
+  /* Multi-curve: EFFR discounting, SOFR and LIBOR forward */
   private static final String PATH_CONFIG_FF = "src/analysis/resources/curve-config/USD-DSCFFOIS-SOOIS-L3MIRS/";
   private static final CurveGroupName GROUP_NAME_FF = CurveGroupName.of("USD-DSCFFOIS-SOOIS-L3MIRS");
   private static final ResourceLocator FILE_GROUP_FF = 
@@ -62,28 +60,22 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
       ResourceLocator.of(PATH_CONFIG_FF + "USD-DSCFFOIS-SOOIS-L3MIRS-nodes.csv");
   private static final RatesCurveGroupDefinition GROUP_DEF_FF = RatesCalibrationCsvLoader
       .load(FILE_GROUP_FF, FILE_SETTINGS_FF, FILE_NODES_FF).get(GROUP_NAME_FF);
-  
   private static final String FILE_QUOTES = 
       "src/analysis/resources/quotes/MARKET-DATA-" + VALUATION_DATE.toString() + ".csv";
   private static final MarketData MARKET_DATA = MarketData
       .of(VALUATION_DATE, QuotesCsvLoader.load(VALUATION_DATE, ResourceLocator.of(FILE_QUOTES)));
-
-  /* Multi-curve SOFR PAI and swap sensitivity */
   private static final ImmutableRatesProvider MULTICURVE_FF =
       CALIBRATOR.calibrate(GROUP_DEF_FF, MARKET_DATA, REF_DATA);
   
-  /* Hull-White and G2++ */
+  /* Model parameters: Hull-White, G2++ and hybrid */
   private static final double MEAN_REVERSION_1 = 0.02;
   private static final double MEAN_REVERSION_2 = 0.15;
   private static final double SIGMA_1 = 0.01;
   private static final double SIGMA_2 = 0.0005;
   private static final double RHO_12 = 0.25;
-  private static final double RHO_23 = 0.25;
-  
   private static final DoubleArray VOLATILITY1_CST = DoubleArray.of(SIGMA_1);
   private static final DoubleArray VOLATILITY2_CST = DoubleArray.of(SIGMA_2);
   private static final DoubleArray VOLATILITY_CST_TIME = DoubleArray.of();
-
   private static final TimeMeasurement TIME_MEASUREMENT = ScaledSecondTime.DEFAULT;
   private static final G2ppPiecewiseConstantParameters G2PP_PARAM =
       G2ppPiecewiseConstantParameters.builder()
@@ -99,9 +91,10 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
       .valuationZone(VALUATION_ZONE)
       .timeMeasure(TIME_MEASUREMENT)
       .build();
-      
+  private static final double RHO_23 = 0.25;
   private static final double A = 0.50; // Spread volatility
   
+  /* Calculator */
   private static final DiscountingTransitionHWHybridG2ppConvexityCalculator CONVEXITY_CALC = 
       DiscountingTransitionHWHybridG2ppConvexityCalculator.DEFAULT;
 
@@ -131,15 +124,13 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
           CALENDAR_FIXING_IBOR.nextOrSame(iborFixingDateStart.plusMonths(fixingStep * loopfixing));
       System.out.print(TIME_MEASUREMENT.relativeTime(VALUATION_DATE, iborFixingDate));
       IborIndexObservation obsIbor = IborIndexObservation.of(USD_LIBOR_3M, iborFixingDate, REF_DATA);
-      OvernightIndexObservation obsOn =
-          OvernightIndexObservation.of(USD_FED_FUND, obsIbor.getEffectiveDate(), REF_DATA);
       double iborRatec1 = libor.rate(obsIbor);
       for (int loopbb = 0; loopbb < nbBigBangDates; loopbb++) {
         double adjustment = 0.0;
         LocalDate bigbangDate = CALENDAR_FIXING_IBOR.nextOrSame(bigBangDateStart.plusMonths(bigbangStep * loopbb));
         if (iborFixingDate.isAfter(bigbangDate.plusMonths(fixingStep))) {
           double forwardAdjusted = CONVEXITY_CALC
-              .adjustedForward(obsIbor, obsOn, bigbangDate, MULTICURVE_FF, G2PP_PARAM, RHO_23, A);
+              .adjustedForward(obsIbor, USD_FED_FUND, bigbangDate, MULTICURVE_FF, G2PP_PARAM, RHO_23, A);
           adjustment = iborRatec1 - forwardAdjusted;
         }
         System.out.print(", " + adjustment);
@@ -155,7 +146,6 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
   public void adjusted_forward_corcor(){
     IborIndexRates libor = MULTICURVE_FF.iborIndexRates(USD_LIBOR_3M);
     IborIndexObservation obsIbor = IborIndexObservation.of(USD_LIBOR_3M, FIXING_DATE, REF_DATA);
-    OvernightIndexObservation obsOn = OvernightIndexObservation.of(USD_FED_FUND, obsIbor.getEffectiveDate(), REF_DATA);
     DoubleArray rho12 = DoubleArray.of(15, i -> -0.70 + i * 0.10);
     DoubleArray rho23 = DoubleArray.of(15, i -> -0.70 + i * 0.10);
     System.out.print("0.0");
@@ -172,7 +162,7 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
             .build();
         double iborRatec1 = libor.rate(obsIbor);
         double forwardAdjusted = CONVEXITY_CALC
-            .adjustedForward(obsIbor, obsOn, BIG_BANG_DATE, MULTICURVE_FF, g2ppParam, rho23.get(looprho23), A);
+            .adjustedForward(obsIbor, USD_FED_FUND, BIG_BANG_DATE, MULTICURVE_FF, g2ppParam, rho23.get(looprho23), A);
         double adjustment = iborRatec1 - forwardAdjusted;
         System.out.print(", " + adjustment);
       }
@@ -188,7 +178,6 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
     IborIndexRates libor = MULTICURVE_FF.iborIndexRates(USD_LIBOR_3M);
     IborIndexObservation obsIbor = IborIndexObservation.of(USD_LIBOR_3M, FIXING_DATE, REF_DATA);
     double iborRatec1 = libor.rate(obsIbor);
-    OvernightIndexObservation obsOn = OvernightIndexObservation.of(USD_FED_FUND, obsIbor.getEffectiveDate(), REF_DATA);
     DoubleArray vol2 = DoubleArray.of(15, i -> 0.0001 + i * 0.0001);
     DoubleArray mr = DoubleArray.of(15, i -> 0.01 + i * 0.01);
     System.out.print("0.0");
@@ -205,7 +194,7 @@ public class SofrTransitionHWHybridG2ppConvexityAnalysis {
             .volatilityTime(G2PP_PARAM.getVolatilityTime().subArray(1, G2PP_PARAM.getVolatilityTime().size() - 1))
             .build();
         double forwardAdjusted = CONVEXITY_CALC
-            .adjustedForward(obsIbor, obsOn, BIG_BANG_DATE, MULTICURVE_FF, g2ppParam, RHO_23, A);
+            .adjustedForward(obsIbor, USD_FED_FUND, BIG_BANG_DATE, MULTICURVE_FF, g2ppParam, RHO_23, A);
         double adjustment = iborRatec1 - forwardAdjusted;
         System.out.print(", " + adjustment);
       }

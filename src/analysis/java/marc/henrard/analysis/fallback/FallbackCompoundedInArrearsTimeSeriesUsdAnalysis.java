@@ -50,7 +50,7 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
   // The start and end IBOR fixing dates for which the compounded rate is computed
 //  private static final LocalDate START_DATE_SOFR = LocalDate.of(2018, 3, 29);
   private static final LocalDate START_DATE_SOFR = LocalDate.of(2014, 8, 22);
-  private static final LocalDate END_DATE_SOFR = LocalDate.of(2020, 2, 11);
+  private static final LocalDate END_DATE_SOFR = LocalDate.of(2020, 6, 9);
   private static final LocalDate START_DATE_EFFR = LocalDate.of(2000, 1, 3);
   private static final LocalDate END_DATE_EFFR = LocalDate.of(2020, 1, 29);
   private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
@@ -150,8 +150,8 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
       currentDate = FIXING_CAL_IBOR_IMPL.next(currentDate);
     }
     /* Export */
-    String tsName = ON_INDEX_SOFR.toString() + "CMP-" + IBOR_INDEX.getTenor().toString();
-//    String tsName = ON_INDEX_SOFR.toString() + "PRECMP-" + IBOR_INDEX.getTenor().toString();
+//    String tsName = ON_INDEX_SOFR.toString() + "CMP-" + IBOR_INDEX.getTenor().toString();
+    String tsName = ON_INDEX_SOFR.toString() + "PRECMP-" + IBOR_INDEX.getTenor().toString();
 //    String tsName = ON_INDEX_SOFR.toString() + "FWDCMP-" + IBOR_INDEX.getTenor().toString();
     StringBuilder tsFileBuilder = new StringBuilder();
     ExportUtils.exportTimeSeries(tsName, builderTs.build(), tsFileBuilder);

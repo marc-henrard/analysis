@@ -86,8 +86,6 @@ public class SofrPaiTransitionSensitivityAnalysis {
   
   private static final String FILE_QUOTES = 
       "src/analysis/resources/quotes/MARKET-DATA-" + VALUATION_DATE.toString() + ".csv";
-  private static final String FILE_QUOTES_SOFR_SHIFTED = 
-      "src/analysis/resources/quotes/MARKET-DATA-" + VALUATION_DATE.toString() + "-shifted.csv";
   private static final MarketData MARKET_DATA = MarketData
       .of(VALUATION_DATE, QuotesCsvLoader.load(VALUATION_DATE, ResourceLocator.of(FILE_QUOTES)));
   
