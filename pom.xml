@@ -29,7 +29,7 @@
   
   <!-- ==========          Dependencies          ========== -->
   <dependencies>
-    <!-- RisQ -->
+    <!-- muRisQ -->
     <dependency>
       <groupId>marc.henrard</groupId>
       <artifactId>murisq-ir-models</artifactId>
