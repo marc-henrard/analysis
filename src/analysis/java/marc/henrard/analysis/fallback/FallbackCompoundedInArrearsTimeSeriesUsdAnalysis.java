@@ -48,9 +48,9 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
   
   private static final ReferenceData REF_DATA = ReferenceData.standard();
   // The start and end IBOR fixing dates for which the compounded rate is computed
-//  private static final LocalDate START_DATE_SOFR = LocalDate.of(2018, 3, 29);
+  //  private static final LocalDate START_DATE_SOFR = LocalDate.of(2018, 3, 29);
   private static final LocalDate START_DATE_SOFR = LocalDate.of(2014, 8, 22);
-  private static final LocalDate END_DATE_SOFR = LocalDate.of(2020, 2, 11);
+  private static final LocalDate END_DATE_SOFR = LocalDate.of(2020, 9, 2);
   private static final LocalDate START_DATE_EFFR = LocalDate.of(2000, 1, 3);
   private static final LocalDate END_DATE_EFFR = LocalDate.of(2020, 1, 29);
   private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
@@ -64,7 +64,7 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
   private static final HolidayCalendarId FIXING_CAL_IBOR_ID = IBOR_INDEX.getFixingCalendar();
   private static final HolidayCalendar FIXING_CAL_IBOR_IMPL = REF_DATA.getValue(FIXING_CAL_IBOR_ID);
   
-  private static final int OFFSET_DAYS = 0;
+  private static final int OFFSET_DAYS = 2;
   private static final DaysAdjustment OFFSET_DAYSADJUST_SOFR = 
       DaysAdjustment.ofBusinessDays(-OFFSET_DAYS, FIXING_CAL_SOFR);
   private static final DaysAdjustment OFFSET_PLUS_DAYSADJUST_SOFR = 
@@ -72,9 +72,9 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
   
   /* Fixings */
   private static final List<ResourceLocator> FIXING_RESOURCES_SOFR = ImmutableList.of(
-//      ResourceLocator.of("src/analysis/resources/fixing/USD-SOFR.csv"));
+  //      ResourceLocator.of("src/analysis/resources/fixing/USD-SOFR.csv"));
   ResourceLocator.of("src/analysis/resources/fixing/USD-SOFR-2.csv"));
-//  ResourceLocator.of("src/analysis/resources/fixing/USD-SOFR-FWD.csv"));
+  //  ResourceLocator.of("src/analysis/resources/fixing/USD-SOFR-FWD.csv"));
   private static final Map<ObservableId, LocalDateDoubleTimeSeries> TIME_SERIES_SOFR =
       FixingSeriesCsvLoader.load(FIXING_RESOURCES_SOFR);
   private static final LocalDateDoubleTimeSeries SOFR_TS = TIME_SERIES_SOFR.get(IndexQuoteId.of(ON_INDEX_SOFR));
@@ -107,7 +107,7 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
       currentDate = FIXING_CAL_IBOR_IMPL.next(currentDate);
     }
     /* Export */
-    String tsName = ON_INDEX_SOFR.toString() + "CMP-OFFSET0-" + IBOR_INDEX.getTenor().toString();
+    String tsName = ON_INDEX_SOFR.toString() + "CMP-OFFSET" + OFFSET_DAYS + "-" + IBOR_INDEX.getTenor().toString();
     StringBuilder tsFileBuilder = new StringBuilder();
     ExportUtils.exportTimeSeries(tsName, builderTs.build(), tsFileBuilder);
     ExportUtils.exportString(tsFileBuilder.toString(), "src/analysis/resources/output/" + tsName + ".csv");

@@ -38,7 +38,7 @@ import marc.henrard.murisq.basics.index.ComplementIborIndices;
 public class FallbackHistoricalTimeSeriesUsdAnalysis {
 
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 4, 17);
+  private static final LocalDate ANALYSIS_DATE = LocalDate.of(2020, 12, 4);
   private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
   private static final HolidayCalendar CALENDAR_FIXING_IBOR = REF_DATA.getValue(IBOR_INDEX.getFixingCalendar());
 //  private static final IborIndex ONCMP_INDEX = ComplementIborIndices.USD_FED_FUNDCMP_3M;
@@ -48,7 +48,7 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       ResourceLocator.of("src/analysis/resources/fixing/" + IBOR_INDEX.toString() + ".csv"),
 //      ResourceLocator.of("src/analysis/resources/fixing/USD-FED-FUNDCMP-"
 //        + IBOR_INDEX.getTenor().toString() + ".csv"));
-      ResourceLocator.of("src/analysis/resources/fixing/USD-SOFRCMP-" + IBOR_INDEX.getTenor().toString() + ".csv"));
+      ResourceLocator.of("src/analysis/resources/fixing/USD-SOFRCMP-OFFSET2-" + IBOR_INDEX.getTenor().toString() + ".csv"));
   private static final Map<ObservableId, LocalDateDoubleTimeSeries> TIME_SERIES =
       FixingSeriesCsvLoader.load(FIXING_RESOURCES);
   private static final List<LocalDate> ANNOUNCEMENT_DATES = ImmutableList.of(
@@ -57,7 +57,7 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       LocalDate.of(2021, 10, 1),
       LocalDate.of(2022, 1, 1));
   private static final int NB_ANNOUNCEMENT_DATES = ANNOUNCEMENT_DATES.size();
-  private static final int[] LOOKBACK_PERIODS_STARTDATE = {5, 7, 10, 15};
+  private static final int[] LOOKBACK_PERIODS_STARTDATE = {5, 7, 10};
   private static final int STD_DEV_FUT = 1;
   private static final int LOOKBACK_PERIOD = 5;
 //  private static final int BP1 = 10_000;
@@ -96,7 +96,7 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       Collections.sort(values);
       double median = Quantiles.median().compute(tsLookbackPeriod.stream().mapToDouble(pt -> pt.getValue()).toArray());
       double uncertainty = (values.get(size / 2) - values.get(size / 2 - 1));
-      if(uncertainty > uncertaintyMax) {
+      if (uncertainty > uncertaintyMax) {
         uncertaintyMax = uncertainty;
         System.out.println(currentDateMedian + ": " + (uncertainty * PERCENT));
       }
@@ -147,12 +147,13 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
         while (currentDate.isBefore(ANALYSIS_DATE)) {
           if (tsSpread.containsDate(currentDate)) {
             LocalDate maturityDate = IBOR_INDEX.calculateMaturityFromEffective(currentDate, REF_DATA);
-            LocalDateDoubleTimeSeries tsSpreadLookback =
-                tsSpread.subSeries(startDate, currentDate);
-            tsMean.put(maturityDate,
-                tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).average().getAsDouble());
-            tsMedian.put(maturityDate,
-                Quantiles.median().compute(tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).toArray()));
+            LocalDateDoubleTimeSeries tsSpreadLookback = tsSpread.subSeries(startDate, currentDate);
+            if (tsSpreadLookback.size() > 10) {
+              tsMean.put(maturityDate,
+                  tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).average().getAsDouble());
+              tsMedian.put(maturityDate,
+                  Quantiles.median().compute(tsSpreadLookback.stream().mapToDouble(pt -> pt.getValue()).toArray()));
+            }
           }
           currentDate = currentDate.plusDays(1);
         }
@@ -163,12 +164,12 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
       /* Export */
       for (int loopdate = 0; loopdate < NB_ANNOUNCEMENT_DATES; loopdate++) {
         StringBuilder tsMeanExport = new StringBuilder();
-        String nameMean = IBOR_INDEX.toString() + "EFFRCMP-RUNNING-MEAN-" +
+        String nameMean = IBOR_INDEX.toString() + "SOFRCMP-RUNNING-MEAN-" +
             ANNOUNCEMENT_DATES.get(loopdate).toString() + "-" + LOOKBACK_PERIODS_STARTDATE[looplookback];
         ExportUtils.exportTimeSeries(nameMean, tsRunningMean.get(loopdate), tsMeanExport);
         ExportUtils.exportString(tsMeanExport.toString(), EXPORT_PATH + nameMean + ".csv");
         StringBuilder tsMedianExport = new StringBuilder();
-        String nameMedian = IBOR_INDEX.toString() + "EFFRCMP-RUNNING-MEDIAN-" +
+        String nameMedian = IBOR_INDEX.toString() + "SOFRCMP-RUNNING-MEDIAN-" +
             ANNOUNCEMENT_DATES.get(loopdate).toString() + "-" + LOOKBACK_PERIODS_STARTDATE[looplookback];
         ExportUtils.exportTimeSeries(nameMedian, tsRunningMedian.get(loopdate), tsMedianExport);
         ExportUtils.exportString(tsMedianExport.toString(), EXPORT_PATH + nameMedian + ".csv");
