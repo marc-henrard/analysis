@@ -35,8 +35,8 @@ import com.opengamma.strata.product.swaption.Swaption;
 import marc.henrard.analysis.dataset.MulticurveStandardEurDataSet;
 import marc.henrard.murisq.basics.time.ScaledSecondTime;
 import marc.henrard.murisq.model.lmm.LiborMarketModelDisplacedDiffusionDeterministicSpreadParameters;
-import marc.henrard.murisq.model.lmm.LmmdddSwaptionRootBachelierVolatility1Calibrator;
-import marc.henrard.murisq.model.lmm.LmmdddUtils;
+import marc.henrard.murisq.model.lmm.LmmdddSwaptionRootBachelierVolatility1LevelCalibrator;
+import marc.henrard.murisq.model.lmm.LmmdddExamplesUtils;
 import marc.henrard.murisq.pricer.swaption.LmmdddSwaptionPhysicalProductExplicitApproxPricer;
 
 /**
@@ -79,7 +79,7 @@ public class LmmdddSwaptionSkewAnalysis {
   private static final double[] MONEYNESS = 
       new double[] {-0.0150, -0.0100, -0.0050, -0.0025, 0, 0.0025, 0.0050, 0.0100, 0.0150};
   private static final double[] DISPLACEMENTS =
-      new double[] {0.0250, 0.0500, 0.1000, 0.5000};
+      new double[] {0.0250, 0.0500, 0.1000, 0.5000, 0.4000};
   private static final double NOTIONAL = 1_000_000.0d;
   
   /* Pricers */
@@ -119,11 +119,11 @@ public class LmmdddSwaptionSkewAnalysis {
           ResolvedSwaption swaptionAtmResolved = swaptionAtm.resolve(REF_DATA);
           // Calibration ATM
           LiborMarketModelDisplacedDiffusionDeterministicSpreadParameters lmmDis =
-              LmmdddUtils.lmm2Angle(MEAN_REVERTION, VOL2_LEVEL_1, VOL2_ANGLE, VOL2_LEVEL_2, DISPLACEMENTS[loopdis],
+              LmmdddExamplesUtils.lmm2Angle(MEAN_REVERTION, VOL2_LEVEL_1, VOL2_ANGLE, VOL2_LEVEL_2, DISPLACEMENTS[loopdis],
                   IBOR_DATES, EUR_EONIA, EUR_EURIBOR_3M, ScaledSecondTime.DEFAULT, MULTICURVE_EUR,
                   VALUATION_ZONE, VALUATION_TIME, REF_DATA);
-          LmmdddSwaptionRootBachelierVolatility1Calibrator lmmCalibrator =
-              LmmdddSwaptionRootBachelierVolatility1Calibrator.of(lmmDis);
+          LmmdddSwaptionRootBachelierVolatility1LevelCalibrator lmmCalibrator =
+              LmmdddSwaptionRootBachelierVolatility1LevelCalibrator.of(lmmDis);
           LiborMarketModelDisplacedDiffusionDeterministicSpreadParameters parametersCalibrated =
               lmmCalibrator.calibrate(swaptionAtmResolved, IV_TARGET, MULTICURVE_EUR);
           for (int loopmoney = 0; loopmoney < MONEYNESS.length; loopmoney++) {
