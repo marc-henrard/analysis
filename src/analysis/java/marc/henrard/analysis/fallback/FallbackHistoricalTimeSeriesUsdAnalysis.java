@@ -66,63 +66,8 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
   private static final String EXPORT_PATH = "src/analysis/resources/output/";
 
   /**
-   * Computes past means and medians with a lookback period.
-   * 
-   * @throws IOException
-   */
-  @Test
-  public void spread_computation_period() throws IOException {
-    long start, end;
-    start = System.currentTimeMillis();
-    IndexQuoteId idLibor = IndexQuoteId.of(IBOR_INDEX);
-    IndexQuoteId idOnCmp = IndexQuoteId.of(ONCMP_INDEX);
-    LocalDateDoubleTimeSeries tsLibor = TIME_SERIES.get(idLibor);
-    LocalDateDoubleTimeSeries tsOnCmp = TIME_SERIES.get(idOnCmp);
-    LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
-    System.out.println("Spread for " + tsSpread.getLatestDate() + " is " + tsSpread.getLatestValue());
-
-    LocalDate startDateSpread = tsSpread.getEarliestDate();
-    LocalDate endDateSpread = tsSpread.getLatestDate();
-    LocalDate startDateMedian = CALENDAR_ON.nextOrSame(startDateSpread.plusYears(LOOKBACK_PERIOD));
-
-    LocalDate currentDateMedian = startDateMedian;
-    LocalDateDoubleTimeSeriesBuilder tsMedian = LocalDateDoubleTimeSeries.builder();
-    double uncertaintyMax = 0.0;
-    while (!currentDateMedian.isAfter(endDateSpread)) {
-      LocalDate startLookback = currentDateMedian.minusYears(LOOKBACK_PERIOD);
-      LocalDateDoubleTimeSeries tsLookbackPeriod = tsSpread.subSeries(startLookback, currentDateMedian);
-      int size = tsLookbackPeriod.size();
-      List<Double> values = tsLookbackPeriod.values().boxed().collect(Collectors.toList());
-      Collections.sort(values);
-      double median = Quantiles.median().compute(tsLookbackPeriod.stream().mapToDouble(pt -> pt.getValue()).toArray());
-      double uncertainty = (values.get(size / 2) - values.get(size / 2 - 1));
-      if (uncertainty > uncertaintyMax) {
-        uncertaintyMax = uncertainty;
-        System.out.println(currentDateMedian + ": " + (uncertainty * PERCENT));
-      }
-      System.out.println(currentDateMedian + ": " + size + ", " + median 
-          + ", " + values.get(size / 2 - 1) + ", " + values.get(size / 2) 
-          + ", " + (uncertainty * PERCENT));
-      tsMedian.put(currentDateMedian, median);
-      do {
-        currentDateMedian = currentDateMedian.plusDays(1);
-      } while (!tsSpread.containsDate(currentDateMedian) && !currentDateMedian.isAfter(endDateSpread));
-    }
-
-    StringBuilder tsMedianExport = new StringBuilder();
-    String nameMedian = IBOR_INDEX.toString() + "SOFR-RUNNING-MEDIAN-LOOKBACKPERIOD";
-    ExportUtils.exportTimeSeries(nameMedian, tsMedian.build(), tsMedianExport);
-    ExportUtils.exportString(tsMedianExport.toString(), EXPORT_PATH + nameMedian + ".csv");
-
-    System.out.println("Uncertainty median max (%): " + (uncertaintyMax * PERCENT));
-    
-    end = System.currentTimeMillis();
-    System.out.println("Computation in " + (end - start) + " ms.");
-
-  }
-
-  /**
-   * Computes past means and medians with a fixed starting date
+   * Computes past means and medians with fixed starting dates. 
+   * The starting dates are selected from a set of announcement dates and lookback periods.
    * 
    * @throws IOException
    */
@@ -177,6 +122,62 @@ public class FallbackHistoricalTimeSeriesUsdAnalysis {
     }
     end = System.currentTimeMillis();
     System.out.println("Computation in " + (end - start) + " ms.");
+  }
+
+  /**
+   * Computes past means and medians with a lookback period.
+   * 
+   * @throws IOException
+   */
+  @Test
+  public void spread_computation_period() throws IOException {
+    long start, end;
+    start = System.currentTimeMillis();
+    IndexQuoteId idLibor = IndexQuoteId.of(IBOR_INDEX);
+    IndexQuoteId idOnCmp = IndexQuoteId.of(ONCMP_INDEX);
+    LocalDateDoubleTimeSeries tsLibor = TIME_SERIES.get(idLibor);
+    LocalDateDoubleTimeSeries tsOnCmp = TIME_SERIES.get(idOnCmp);
+    LocalDateDoubleTimeSeries tsSpread = tsLibor.intersection(tsOnCmp, (l, o) -> l - o);
+    System.out.println("Spread for " + tsSpread.getLatestDate() + " is " + tsSpread.getLatestValue());
+
+    LocalDate startDateSpread = tsSpread.getEarliestDate();
+    LocalDate endDateSpread = tsSpread.getLatestDate();
+    LocalDate startDateMedian = CALENDAR_ON.nextOrSame(startDateSpread.plusYears(LOOKBACK_PERIOD));
+
+    LocalDate currentDateMedian = startDateMedian;
+    LocalDateDoubleTimeSeriesBuilder tsMedian = LocalDateDoubleTimeSeries.builder();
+    double uncertaintyMax = 0.0;
+    while (!currentDateMedian.isAfter(endDateSpread)) {
+      LocalDate startLookback = currentDateMedian.minusYears(LOOKBACK_PERIOD);
+      LocalDateDoubleTimeSeries tsLookbackPeriod = tsSpread.subSeries(startLookback, currentDateMedian);
+      int size = tsLookbackPeriod.size();
+      List<Double> values = tsLookbackPeriod.values().boxed().collect(Collectors.toList());
+      Collections.sort(values);
+      double median = Quantiles.median().compute(tsLookbackPeriod.stream().mapToDouble(pt -> pt.getValue()).toArray());
+      double uncertainty = (values.get(size / 2) - values.get(size / 2 - 1));
+      if (uncertainty > uncertaintyMax) {
+        uncertaintyMax = uncertainty;
+        System.out.println(currentDateMedian + ": " + (uncertainty * PERCENT));
+      }
+      System.out.println(currentDateMedian + ": " + size + ", " + median 
+          + ", " + values.get(size / 2 - 1) + ", " + values.get(size / 2) 
+          + ", " + (uncertainty * PERCENT));
+      tsMedian.put(currentDateMedian, median);
+      do {
+        currentDateMedian = currentDateMedian.plusDays(1);
+      } while (!tsSpread.containsDate(currentDateMedian) && !currentDateMedian.isAfter(endDateSpread));
+    }
+
+    StringBuilder tsMedianExport = new StringBuilder();
+    String nameMedian = IBOR_INDEX.toString() + "SOFR-RUNNING-MEDIAN-LOOKBACKPERIOD";
+    ExportUtils.exportTimeSeries(nameMedian, tsMedian.build(), tsMedianExport);
+    ExportUtils.exportString(tsMedianExport.toString(), EXPORT_PATH + nameMedian + ".csv");
+
+    System.out.println("Uncertainty median max (%): " + (uncertaintyMax * PERCENT));
+    
+    end = System.currentTimeMillis();
+    System.out.println("Computation in " + (end - start) + " ms.");
+
   }
 
   /**

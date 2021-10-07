@@ -72,6 +72,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency> 
+    <dependency>
+      <groupId>marc.henrard</groupId>
+      <artifactId>murisq-ir-models</artifactId>
+      <version>${murisq-ir.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency> 
   </dependencies>
   
   
@@ -108,8 +115,8 @@
 
   <!-- ==================================================================== -->
   <properties>
-    <murisq-ir.version>0.1.0-SNAPSHOT</murisq-ir.version>
-    <og-strata.version>2.7.0</og-strata.version>
+    <murisq-ir.version>2021.02.2-SNAPSHOT</murisq-ir.version>
+    <og-strata.version>2.9.0</og-strata.version>
     <opencsv.version>2.3</opencsv.version>
     <assertj.version>3.14.0</assertj.version>
     <junit5.version>5.5.2</junit5.version>
