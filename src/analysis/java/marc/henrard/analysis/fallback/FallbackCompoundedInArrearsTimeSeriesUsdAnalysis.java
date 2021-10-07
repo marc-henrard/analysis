@@ -47,19 +47,23 @@ import marc.henrard.murisq.pricer.generic.FallbackUtils;
 public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
   
   private static final ReferenceData REF_DATA = ReferenceData.standard();
-  // The start and end IBOR fixing dates for which the compounded rate is computed
-  //  private static final LocalDate START_DATE_SOFR = LocalDate.of(2018, 3, 29);
-  private static final LocalDate START_DATE_SOFR = LocalDate.of(2014, 8, 22);
-  private static final LocalDate END_DATE_SOFR = LocalDate.of(2020, 9, 2);
-  private static final LocalDate START_DATE_EFFR = LocalDate.of(2000, 1, 3);
-  private static final LocalDate END_DATE_EFFR = LocalDate.of(2020, 1, 29);
-  private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
-  private static final OvernightIndex ON_INDEX_EFFR = OvernightIndices.USD_FED_FUND;
-  private static final HolidayCalendarId FIXING_CAL_EFFR = ON_INDEX_EFFR.getFixingCalendar();
-  private static final HolidayCalendar FIXING_CAL_EFFR_IMPL = REF_DATA.getValue(FIXING_CAL_EFFR);
   private static final OvernightIndex ON_INDEX_SOFR = OvernightIndices.USD_SOFR;
   private static final HolidayCalendarId FIXING_CAL_SOFR = ON_INDEX_SOFR.getFixingCalendar();
   private static final HolidayCalendar FIXING_CAL_SOFR_IMPL = REF_DATA.getValue(FIXING_CAL_SOFR);
+  // The start and end IBOR fixing dates for which the compounded rate is computed
+  //  private static final LocalDate START_DATE_SOFR = LocalDate.of(2018, 3, 29);
+  private static final LocalDate START_DATE_SOFR = LocalDate.of(2014, 8, 22);
+  private static final LocalDate LAST_FIXING_SOFR = LocalDate.of(2021, 10, 1);
+  private static final LocalDate START_DATE_EFFR = LocalDate.of(2000, 1, 3);
+  private static final LocalDate END_DATE_EFFR = LocalDate.of(2020, 1, 29);
+  private static final IborIndex IBOR_INDEX = IborIndices.USD_LIBOR_3M;
+  private static final LocalDate END_DATE_SOFR =
+      FIXING_CAL_SOFR_IMPL.previous(
+          FIXING_CAL_SOFR_IMPL.previous(
+              FIXING_CAL_SOFR_IMPL.previousOrSame(LAST_FIXING_SOFR.minus(IBOR_INDEX.getTenor()))));
+  private static final OvernightIndex ON_INDEX_EFFR = OvernightIndices.USD_FED_FUND;
+  private static final HolidayCalendarId FIXING_CAL_EFFR = ON_INDEX_EFFR.getFixingCalendar();
+  private static final HolidayCalendar FIXING_CAL_EFFR_IMPL = REF_DATA.getValue(FIXING_CAL_EFFR);
   
   private static final HolidayCalendarId FIXING_CAL_IBOR_ID = IBOR_INDEX.getFixingCalendar();
   private static final HolidayCalendar FIXING_CAL_IBOR_IMPL = REF_DATA.getValue(FIXING_CAL_IBOR_ID);
@@ -84,7 +88,8 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
       FixingSeriesCsvLoader.load(FIXING_RESOURCES_EFFR);
   private static final LocalDateDoubleTimeSeries EFFR_TS = TIME_SERIES_EFFR.get(IndexQuoteId.of(ON_INDEX_EFFR));
 
-  /* Computes the composition for SOFR on the periods corresponding to LIBOR tenor and offset by 2 business days. */
+  /* Computes the composition for SOFR on the periods corresponding to LIBOR tenor and offset by 2 business days. 
+   * Mechanism to compute ISDA-designed historical spread adjustment. */
   @Test
   public void on_compounded_sofr_tenor_offset() throws IOException {
     LocalDateDoubleTimeSeriesBuilder builderTs = LocalDateDoubleTimeSeries.builder();
@@ -110,7 +115,8 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
     String tsName = ON_INDEX_SOFR.toString() + "CMP-OFFSET" + OFFSET_DAYS + "-" + IBOR_INDEX.getTenor().toString();
     StringBuilder tsFileBuilder = new StringBuilder();
     ExportUtils.exportTimeSeries(tsName, builderTs.build(), tsFileBuilder);
-    ExportUtils.exportString(tsFileBuilder.toString(), "src/analysis/resources/output/" + tsName + ".csv");
+    String fileName = ON_INDEX_SOFR.toString() + "CMP-OFFSET" + OFFSET_DAYS + "-" + IBOR_INDEX.getTenor().toString();
+    ExportUtils.exportString(tsFileBuilder.toString(), "src/analysis/resources/output/" + fileName + ".csv");
     /* Export with all dates */
     StringBuilder tsFile2Builder = new StringBuilder();
     tsFile2Builder.append("Reference, FixingDate, EffectiveDate, MaturityDate, Value\n");
@@ -121,7 +127,7 @@ public class FallbackCompoundedInArrearsTimeSeriesUsdAnalysis {
       tsFile2Builder.append("," + maturityDates.get(i).format(DateTimeFormatter.ISO_DATE));
       tsFile2Builder.append("," + compInArrears.get(i) + "\n");
     }
-    ExportUtils.exportString(tsFile2Builder.toString(), "src/analysis/resources/output/" + tsName + "-dates.csv");
+    ExportUtils.exportString(tsFile2Builder.toString(), "src/analysis/resources/output/" + fileName + "-dates.csv");
   }
 
   /* Computes the composition for SOFR on the LIBOR periods. */

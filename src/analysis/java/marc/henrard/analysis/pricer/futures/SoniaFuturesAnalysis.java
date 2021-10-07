@@ -5,7 +5,7 @@ package marc.henrard.analysis.pricer.futures;
 
 import static com.opengamma.strata.basics.currency.Currency.GBP;
 import static com.opengamma.strata.basics.index.OvernightIndices.GBP_SONIA;
-import static com.opengamma.strata.product.index.type.IborFutureConventions.GBP_LIBOR_3M_QUARTERLY_IMM;
+import static com.opengamma.strata.product.index.type.IborFutureContractSpecs.GBP_LIBOR_3M_IMM_ICE;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import com.opengamma.strata.basics.ReferenceData;
 import com.opengamma.strata.basics.StandardId;
 import com.opengamma.strata.basics.date.DayCounts;
+import com.opengamma.strata.basics.date.SequenceDate;
 import com.opengamma.strata.collect.array.DoubleArray;
 import com.opengamma.strata.pricer.model.HullWhiteOneFactorPiecewiseConstantParameters;
 import com.opengamma.strata.pricer.model.HullWhiteOneFactorPiecewiseConstantParametersProvider;
@@ -66,8 +67,8 @@ public class SoniaFuturesAnalysis {
     int nbContracts = 25;
     List<LocalDate> immDates = new ArrayList<>();
     for (int i = 0; i <= nbContracts; i++) {
-      LocalDate immDate = GBP_LIBOR_3M_QUARTERLY_IMM
-          .calculateReferenceDateFromTradeDate(VALUATION_DATE, Period.ofWeeks(1), i + 1, REF_DATA);
+      LocalDate immDate = GBP_LIBOR_3M_IMM_ICE
+          .calculateReferenceDate(VALUATION_DATE, SequenceDate.full(Period.ofWeeks(1), i + 1), REF_DATA);
       immDates.add(immDate);
     }
     System.out.println("Date, Adj0, Adj, Fwd");
